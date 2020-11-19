@@ -41,6 +41,9 @@ void atenderPedido();
 void despacharPedido();
 void pedidosPendientes();
 void ventasDelDia();
+void cierreCaja();
+void editarMenu();
+void menuReportes();
 
 bool acceso(string);
 void productosIniciales();
@@ -48,7 +51,16 @@ void menuComidas(cliente&);
 void menuBebidas(cliente&);
 void mostrarMenu(vector<producto>);
 float montoporpedido(cliente &Pedido);
-
+void editarMenuComidas();
+void editarMenuBebidas();
+void agregar(vector<producto>&);
+void eliminar(vector<producto>&);
+void modificar(vector<producto>&);
+bool reportesAnteriores(reporte);
+void reporteDia();
+void reporteMes();
+void mostrarReporte(vector<reporte>);
+void editarReporte();
 void pedirFecha(fecha&);
 bool abisiesto(int);
 void mostrarFecha(fecha);
@@ -90,13 +102,13 @@ void inicio(){
         }
 
     }
-
+    
 }
 
 void administrador(){
     string password;
     bool status=true;
-
+    
     do{
         char opcion;
         cout << endl << "Ingrese el contrase\244a: ";
@@ -152,12 +164,14 @@ void administrador(){
                 if(!colaPedido.empty()){
                     cout << endl << "Antes del cierra atiende todos los pedidos" << endl;
                 }else{
-
+                    cierreCaja();
                 }
                 break;
             case 6:
+                editarMenu();
                 break;
             case 7:
+                menuReportes();
                 break;
             case 8:
                 cout << endl << "Saliendo..." << endl;
@@ -171,7 +185,7 @@ void administrador(){
 
 void empleado(){
     bool status=true;
-
+    
     while(status){
         int opcion;
 
@@ -199,7 +213,7 @@ void empleado(){
                 if(!colaPedido.empty()){
                     cout << endl << "Antes del cierra atiende todos los pedidos" << endl;
                 }else{
-
+                    cierreCaja();
                 }
                 break;
             case 6:
@@ -382,13 +396,394 @@ float montoporpedido(cliente &Pedido){
     return monto;
 }
 
+void cierreCaja(){
+        reporte Reporte;
+        bool continuar=true;
+        cout<< endl << " --CIERRE-- " << endl;
+
+        if(reportes.empty()){
+            pedirFecha(Fecha);
+
+            Reporte.Fecha=Fecha;
+            Reporte.ventasDia=ventasDia;
+
+            reportes.push_back(Reporte);
+
+            cout << "Cierre de caja exitoso en el dia ";
+            mostrarFecha(Fecha);
+            cout << endl << "VENTA: $" << ventasDia << endl;
+
+            ventasDia=0;
+        }else{
+            while(continuar){
+                pedirFecha(Fecha);
+
+                Reporte.Fecha=Fecha;
+                Reporte.ventasDia=ventasDia;
+
+                if(reportesAnteriores(Reporte)){
+                    cout << "No se puede guardar un reporte con fecha anterior a ";
+                    mostrarFecha(reportes.front().Fecha);
+                    cout << endl << endl;
+                }else{
+                    reportes.push_back(Reporte);
+                    sort(reportes.begin(), reportes.end(),compFechas);
+                    cout << "Cierre de caja exitoso en el dia ";
+                    mostrarFecha(Fecha);
+                    cout << endl << "VENTA: $" << ventasDia << endl;
+
+                    ventasDia=0;
+
+                    continuar=false;
+                }
+            } 
+        }
+}
+
+void editarMenu(){
+    int opcion;
+    bool status=true;
+
+    while(status){
+        cout << endl << " --EDITAR MENU--";
+        cout << endl << "Selecciona el menu a modificar: " << endl;
+        cout << "1) Comidas \t3) Regresar" << endl;
+        cout << "2) Bebidas" << endl;
+        cout << "Ingrese una opcion: ";
+        cin >> opcion; cin.ignore();
+
+        switch(opcion){
+            case 1:
+                editarMenuComidas();
+                break;
+            case 2:
+                editarMenuBebidas();
+                break;
+            case 3:
+                status=false;
+                break;
+            default:
+                cout << endl << "La opcion ingresada no es valida" << endl;
+        }
+    }
+}
+
+void menuReportes(){
+    int opcion;
+    bool status=true;
+
+    while(status){
+        cout << endl << " --REPORTES-- ";
+        cout << endl << "Seleccione el metodo de busqueda de los reportes de ventas: " << endl;
+        cout << "1) Buscar por dia \t4) Editar fecha de reporte" << endl;
+        cout << "2) Buscar por mes \t5) Regresar" << endl;
+        cout << "3) Mostrar todos" << endl;
+        cout << "Ingrese una opcion: ";
+        cin >> opcion; cin.ignore();
+
+        switch(opcion){
+            case 1:
+                reporteDia();
+                break;
+            case 2:
+                reporteMes();
+                break;
+            case 3:
+                mostrarReporte(reportes);
+                break;
+            case 4:
+                editarReporte();
+                break;
+            case 5:
+                status=false;
+                break;
+            default:
+                cout << endl << "La opcion ingresada no es valida" << endl;
+        }
+    }
+}
+
+
+void editarMenuComidas(){
+    int opcion;
+    bool status=true;
+
+    while(status){
+        cout << endl << "Selecciona la accion a realizar: " << endl;
+        cout << "1) Agregar comida \t4) Mostrar comidas" << endl;
+        cout << "2) Eliminar comida \t5) Regresar" << endl;
+        cout << "3) Modificar comidas" << endl;
+        cout << "Ingrese una opcion: ";
+        cin >> opcion; cin.ignore();
+
+        switch(opcion){
+            case 1:
+                agregar(comidas);
+                break;
+            case 2:
+                eliminar(comidas);
+                break;
+            case 3:
+                modificar(comidas);
+                break;
+            case 4:
+                mostrarMenu(comidas);
+                cout << endl;
+                break;
+            case 5:
+                status=false;
+                break;
+            default:
+                cout << endl << "La opcion ingresada no es valida" << endl;
+        }
+    }
+}
+
+void editarMenuBebidas(){
+    int opcion;
+    bool status=true;
+
+    while(status){
+        cout << endl << "Selecciona la accion a realizar: " << endl;
+        cout << "1) Agregar bebida \t4) Mostrar bebidas " << endl;
+        cout << "2) Eliminar bebida \t5) Regresar" << endl;
+        cout << "3) Modificar bebidas" << endl;
+        cout << "Ingrese una opcion: ";
+        cin >> opcion; cin.ignore();
+
+        switch(opcion){
+            case 1:
+                agregar(bebidas);
+                break;
+            case 2:
+                eliminar(bebidas);
+                break;
+            case 3:
+                modificar(bebidas);
+                break;
+            case 4:
+                mostrarMenu(bebidas);
+                cout << endl;
+                break;
+            case 5:
+                status=false;
+                break;
+            default:
+                cout << endl << "La opcion ingresada no es valida" << endl;
+        }
+    }
+}
+
+void agregar(vector<producto>&lista){
+    producto Producto;
+    bool encontrado=false;
+
+        cout << endl << "Ingrese el nombre del producto: ";
+        getline(cin,Producto.nombre);
+        for(auto iter=lista.begin(); iter!=lista.end(); iter++){
+                    if(iter->nombre==Producto.nombre){
+                        encontrado=true;
+                        break;
+                    }
+                }
+        if(encontrado){
+            cout << endl << "Error! / Ya hay un producto con ese nombre" << endl;
+        }else{
+            cout << "Ingrese el precio: $";
+            cin >> Producto.precio;
+
+            lista.push_back(Producto);
+
+            cout << endl << "Producto agregado con exito!" << endl;
+        }
+}
+
+void eliminar(vector<producto>&lista){
+    if(lista.size()==1){
+        cout << endl << "No puedes eliminar mas productos, debe haber almenos uno en este menu" << endl;
+    }else{
+        string nombre;
+        bool encontrado=false;
+        
+            cout << endl << "Que producto desea eliminar?" << endl;
+            mostrarMenu(lista);
+            cout << endl << "Ingrese el nombre: ";
+            getline(cin, nombre);
+
+            for(auto iter=lista.begin(); iter!=lista.end(); iter++){
+                if(iter->nombre==nombre){
+                    iter = lista.erase(iter);
+                    encontrado=true;
+                    break;
+                }
+            }
+            if(encontrado){
+                cout << endl << "Producto eliminado con exito!" << endl;
+            }else{
+                cout << endl << "Error! / Producto no encontrado" << endl;
+            }   
+    }
+}
+
+void modificar(vector<producto>&lista){
+    string nombre;
+    bool encontrado=false;
+        cout << endl << "Que producto desea modificar?" << endl;
+        mostrarMenu(lista);
+        cout << endl << "Ingrese el nombre: ";
+        getline(cin, nombre);
+
+        for(auto iter=lista.begin(); iter!=lista.end(); iter++){
+            if(iter->nombre==nombre){
+                cout << endl << "Ingrese el nuevo nombre: ";
+                getline(cin,iter->nombre);
+                cout << "Ingrese el nuevo precio: $";
+                cin >> iter->precio; 
+                encontrado=true;
+                break;
+            }
+        }
+        if(encontrado){
+            cout << endl << "Producto modificado con exito!" << endl;
+        }else{
+            cout << endl << "Error! / Producto no encontrado" << endl;
+        }   
+}
+
+bool reportesAnteriores(reporte Reporte){
+    bool encontrado=false;
+
+    for (int i=0; i<reportes.size(); i++){
+        if(compFechas(reportes.at(i),Reporte)){
+            encontrado=true;
+        }
+    }
+    return encontrado;
+}
+
+void reporteDia(){
+    fecha Fecha;
+    float venta=0;
+    bool encontrado=false;
+
+    cout << endl << "Fecha del reporte que desea buscar: " << endl;
+    pedirFecha(Fecha);
+
+    for (int i = 0; i<reportes.size(); i++){
+        if(Fecha.dia==reportes.at(i).Fecha.dia && Fecha.mes==reportes.at(i).Fecha.mes && Fecha.year==reportes.at(i).Fecha.year){
+            encontrado=true;
+            venta+=reportes.at(i).ventasDia;
+        }
+    }
+    if(encontrado){
+        cout << "El dia ";
+        mostrarFecha(Fecha);
+        cout << " se vendio $" << venta << endl;
+    }else{
+        cout << "Error! / No se ha encontrado un reporte del dia ";
+        mostrarFecha(Fecha);
+        cout << endl;
+    }
+}
+
+void reporteMes(){
+    int mes;
+    int year;
+    float venta=0;
+    bool encontrado=false;
+
+    cout << endl << "Mes a buscar (en formato numerico): ";
+    cin >> mes;
+    while(mes<1 || mes>12){
+        cout << endl << "Error! / Ingrese un mes valido" << endl;
+        cout << endl << "Mes a buscar: ";
+        cin >> mes;
+    }
+    
+    cout << "A\244o: ";
+    cin >> year;
+    while(year<2020){
+        cout << endl << "Error! / No puedes ingresar an\244s anteriores al actual" << endl;
+        cout << endl << "A\244o: ";
+        cin >> year;
+    }
+    
+
+    for (int i = 0; i<reportes.size(); i++){
+        if(mes==reportes.at(i).Fecha.mes && year==reportes.at(i).Fecha.year){
+            encontrado=true;
+            venta+=reportes.at(i).ventasDia;
+        }
+    }
+    if(encontrado){
+        cout << endl << "El "; 
+        cout << year << "/";
+        if (mes<10) cout << 0;
+        cout << mes << " se vendio $" << venta << endl;
+    }else{
+        cout << endl << "Error! / No se ha encontrado un reporte del ";
+        cout << year << "/";
+        if (mes<10) cout << 0;
+        cout << mes << endl;
+    }
+}
+
+void mostrarReporte( vector<reporte>lista){
+    if(reportes.empty()){
+        cout << endl << "Actualmente no hay reportes de venta" << endl;
+    }else{
+        for(int i=0; i<lista.size() ; i++){
+                cout << endl << "- El dia ";
+                mostrarFecha(lista.at(i).Fecha);
+                cout << " se vendio $" << lista.at(i).ventasDia;
+        }
+        cout << endl;
+    }
+}
+
+void editarReporte(){
+    int pos=0;
+    fecha Fecha, FechaMod;
+    bool encontrado=false;
+
+    cout << endl << "Fecha del reporte que desea modificar: " << endl;
+    pedirFecha(Fecha);
+
+    for (int i = 0; i<reportes.size(); i++){
+        if(Fecha.dia==reportes.at(i).Fecha.dia && Fecha.mes==reportes.at(i).Fecha.mes && Fecha.year==reportes.at(i).Fecha.year){
+            encontrado=true;
+            pos=i;
+            break;
+        }
+    }
+    if(encontrado){
+        cout << "Ingrese la nueva fecha: " << endl;
+        pedirFecha(FechaMod);
+
+        reportes.at(pos).Fecha.dia=FechaMod.dia;
+        reportes.at(pos).Fecha.mes=FechaMod.mes;
+        reportes.at(pos).Fecha.year=FechaMod.year;
+
+        cout << "El dia ";
+        mostrarFecha(Fecha);
+        cout << " se modifico correctamente a ";
+        mostrarFecha(FechaMod);
+        cout << endl;
+
+    }else{
+        cout << "Error! / No se ha encontrado la fecha buscada ";
+        mostrarFecha(Fecha);
+        cout << endl;
+    }
+}
+
 void pedirFecha(fecha &Fecha){
     bool continuar=true;
 
     while (continuar){
     cout << "Ingrese el a\244o: ";
     cin >> Fecha.year;
-
+    
     if (Fecha.year < 2020){
         cout << endl << "Error! / No puedes ingresar a\244os anteriores al actual" << endl << endl;
     } else {
@@ -516,7 +911,7 @@ void pedirFecha(fecha &Fecha){
             default: 
                 cout << endl << "Error! / Ha introducido una fecha invalida, intentelo nuevamente" << endl << endl;
         }
-
+        
     }
     }
     cout << endl;
@@ -532,7 +927,7 @@ bool bisiesto;
     }else {
         bisiesto = false;
     }
-
+    
     return bisiesto;
 }
 
@@ -561,4 +956,4 @@ bool compFechas(reporte a, reporte b){
     }
 
     return comparacion;
-} 
+}
