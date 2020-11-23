@@ -39,7 +39,7 @@ void inicio(){
     cout << endl << "BIENVENIDO A SIVAR PIZZA" << endl;
 
     while(status){
-        cout << endl << " ---INICIO---" << endl;
+        cout << endl << " ---MENU DE ACCESO---" << endl;
         cout << "Acceder como: " << endl;
         cout << "1) Administrador" << endl;
         cout << "2) Empleado" << endl;
@@ -69,7 +69,7 @@ void administrador(){
     
     do{
         char opcion;
-        cout << endl << "Ingrese el contrase\244a: ";
+        cout << endl << "Ingrese la contrase\244a: ";
         getline(cin,password);
 
         if(!acceso(password)){
@@ -101,7 +101,7 @@ void administrador(){
         cout << "1) Atender pedido \t5) Cierre de caja" << endl;
         cout << "2) Despachar pedido \t6) Editar menu" << endl;
         cout << "3) Pedidos pendientes \t7) Reporte de ventas" << endl; 
-        cout << "4) Ventas del dia \t8) Cambiar modo de acceso" << endl;
+        cout << "4) Ventas del dia \t8) Opciones de acceso" << endl;
         cout << "Ingrese una opcion: ";
         cin >> opcion; cin.ignore();
 
@@ -132,8 +132,7 @@ void administrador(){
                 menuReportes();
                 break;
             case 8:
-                cout << endl << "Saliendo..." << endl;
-                status=false;
+                opcionesDeAcceso(status);
                 break;
             default:
                 cout << endl << "La opcion ingresada no es valida" << endl;
@@ -327,11 +326,10 @@ void menuReportes(){
     bool status=true;
 
     while(status){
-        cout << endl << " --REPORTES-- ";
-        cout << endl << "Seleccione el metodo de busqueda de los reportes de ventas: " << endl;
-        cout << "1) Buscar por dia \t4) Editar fecha de reporte" << endl;
-        cout << "2) Buscar por mes \t5) Regresar" << endl;
-        cout << "3) Mostrar todos" << endl;
+        cout << endl << " --REPORTES-- " << endl;
+        cout << "1) Buscar reportes por dia \t4) Editar fecha de reporte" << endl;
+        cout << "2) Buscar reportes por mes \t5) Regresar" << endl;
+        cout << "3) Mostrar todos los reportes" << endl;
         cout << "Ingrese una opcion: ";
         cin >> opcion; cin.ignore();
 

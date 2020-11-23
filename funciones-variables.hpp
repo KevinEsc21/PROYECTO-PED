@@ -36,11 +36,14 @@ queue<cliente>colaPedido;
 //VARIABLES GLOBALES
 float ventasDia=0;
 fecha Fecha;
+string password2="password";
 
 //PROTOTIPOS DE FUNCIONES
 
-//Acceder como administrado
+//Acceder como administrador
 bool acceso(string);
+void cambiarPassword();
+void opcionesDeAcceso(bool&);
 
 //Atender pedido
 void productosIniciales();
@@ -75,10 +78,46 @@ bool compFechas(reporte,reporte);
 
 //Acceder como administrado
 bool acceso(string password){
-    if(password == "password"){
+    if(password == password2){
         return true;
     }else{
         return false;
+    }
+}
+
+void cambiarPassword(){
+    cout << endl << "Ingrese la nueva contrase\244a: ";
+    getline(cin,password2);
+    cout << endl << "La contrase\244a se ha cambiado con exito!" << endl;
+} 
+
+void opcionesDeAcceso(bool &status){
+    int opcion;
+    bool continuar=true;
+
+    while(continuar){
+        cout << endl << " --OPCIONES DE ACCESO--" << endl;
+        cout << "1) Cambiar modo de acceso" << endl;
+        cout << "2) Cambiar contrase\244a" << endl;
+        cout << "3) Regresar" << endl;
+        cout << "Ingrese una opcion: ";
+        cin >> opcion; cin.ignore();
+
+        switch(opcion){
+            case 1:
+                cout << endl << "Saliendo..." << endl;
+                status=false;
+                continuar=false;
+                break;
+            case 2:
+                cambiarPassword();
+                break;
+            case 3:
+                continuar=false;
+                break;
+            default:
+                cout << endl << "La opcion ingresada no es valida" << endl;
+        }
     }
 }
 
