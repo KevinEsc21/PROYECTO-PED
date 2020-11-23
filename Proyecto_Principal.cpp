@@ -1,5 +1,5 @@
 #include <iostream>
-#include "funciones-variables.hpp"
+#include "Proyecto_Funciones_y_variables.hpp"
 using namespace std;
 
 //PROTOTIPOS DE FUNCIONES
